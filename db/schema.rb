@@ -10,18 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_23_222503) do
+ActiveRecord::Schema.define(version: 2020_01_24_162311) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "issue_components", force: :cascade do |t|
     t.bigint "issue_id", null: false
-    t.string "name", limit: 30, null: false
+    t.string "name", limit: 40, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["issue_id"], name: "index_issue_components_on_issue_id"
     t.index ["name"], name: "index_issue_components_on_name"
+  end
+
+  create_table "issue_labels", force: :cascade do |t|
+    t.bigint "issue_id", null: false
+    t.string "name", limit: 200, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["issue_id"], name: "index_issue_labels_on_issue_id"
+    t.index ["name"], name: "index_issue_labels_on_name"
+  end
+
+  create_table "issue_sprints", force: :cascade do |t|
+    t.bigint "issue_id", null: false
+    t.string "name", limit: 200, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["issue_id"], name: "index_issue_sprints_on_issue_id"
+    t.index ["name"], name: "index_issue_sprints_on_name"
   end
 
   create_table "issues", force: :cascade do |t|
@@ -35,6 +53,7 @@ ActiveRecord::Schema.define(version: 2020_01_23_222503) do
     t.string "assignee"
     t.string "status", limit: 30
     t.string "resolution", limit: 30
+    t.string "fix_version", limit: 100
     t.datetime "issue_updated_at"
     t.datetime "issue_created_at"
     t.datetime "resolved_at"
@@ -59,4 +78,6 @@ ActiveRecord::Schema.define(version: 2020_01_23_222503) do
   end
 
   add_foreign_key "issue_components", "issues"
+  add_foreign_key "issue_labels", "issues"
+  add_foreign_key "issue_sprints", "issues"
 end

@@ -11,6 +11,7 @@ class CreateIssues < ActiveRecord::Migration[6.0]
       t.string :assignee
       t.string :status, limit: 30, index: true
       t.string :resolution, limit: 30, index: true
+      t.string :fix_version, limit: 100
       t.datetime :issue_updated_at, index: true
       t.datetime :issue_created_at, index: true
       t.datetime :resolved_at, index: true
