@@ -36,6 +36,10 @@ class Issue < ApplicationRecord
   scope :goagent, -> { where(project: 'GO') }
   scope :tandv, -> { where(project: 'TV') }
 
+  scope :bugs, -> { where(issue_type: 'Bug') }
+  scope :stories, -> { where(issue_type: 'Story') }
+  scope :tasks, -> { where(issue_type: 'Task') }
+
   scope :with_component, ->(components) {
     joins(:issue_components).where(issue_components: { name: Array(components) })
   }
@@ -77,21 +81,58 @@ class Issue < ApplicationRecord
   }
 
   scope :ticket_origins, -> {
-    where('ticket_origin is not null').group(:ticket_origin)
+    group(:ticket_origin)
   }
 
   scope :origins, -> {
-    where('origin is not null').group(:origin)
+    group(:origin)
   }
 
   scope :product_components, -> {
-    where('product_component is not null').group(:product_component)
+    group(:product_component)
   }
 
   def incr numeric_field = nil
     numeric_field ? self[numeric_field.to_sym].to_i : 1
   end
 
+  def self.sum values
+    return 0 if values.empty?
+
+    values.map(&:to_f).inject(&:+)
+  end
+
+  def self.mean values
+    return 0 if values.empty?
+
+    sum(values) / values.length.to_f
+  end
+
+  def self.median values
+    return 0 if values.empty?
+
+    sorted = values.sort
+    if sorted.length % 2 == 0
+      (sorted[sorted.length / 2] + sorted[sorted.length / 2 + 1]) / 2.0
+    else
+      sorted[sorted.length / 2]
+    end
+  end
+
+  def self.sample_variance values
+    return 0 if values.empty?
+
+    m = mean(values)
+    sum = values.inject(0) {|accum, i| accum + (i-mean)**2 }
+    sum / (values.length - 1).to_f
+  end
+
+  def std_dev values
+    return 0 if values.empty?
+
+    var = sample_variance(values)
+    Math.sqrt(var)
+  end
 
   # Brute force move issues into an array element corresponding 
   # to the week when it occurred.
