@@ -5,6 +5,7 @@ class CreateIssues < ActiveRecord::Migration[6.0]
       t.string :project_name, limit: 30
       t.string :issue_type, limit: 20, index: true
       t.string :issue_key, limit: 30, index: true
+      t.string :epic_key, limit: 30, index: true
       t.bigint :issue_id, null: false
       t.integer :story_points, null: false, default: 0
       t.string :summary

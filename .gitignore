@@ -32,3 +32,6 @@ yarn-debug.log*
 
 # Data Files
 *.csv
+
+# vim and ides
+*.swp

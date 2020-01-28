@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 class Issue < ApplicationRecord
   class Bin
     attr_reader :key, :values
@@ -175,5 +177,17 @@ class Issue < ApplicationRecord
       hsh[val] += incr
     end
     hsh
+  end
+
+  def self.to_csv
+    attributes = %i{project issue_type issue_id story_points summary status resolution issue_created_at resolved_at priority ticket_origin origin product_component}
+
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+
+      all.each do |issue|
+        csv << attributes.map{ |attr| issue[attr] }
+      end
+    end
   end
 end

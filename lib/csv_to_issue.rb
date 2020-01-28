@@ -16,6 +16,7 @@ class CsvToIssue
   # Issue Type
   # Issue key
   # Issue id
+  # Epic key
   # Summary
   # Assignee
   # Status
@@ -66,6 +67,8 @@ class CsvToIssue
       -> (m, v) { m.issue_components.build(name: v) unless v.blank? }
     when /\(Story Points\)/i
       -> (m, v) { m.story_points = v.to_i }
+    when /\(Epic Link\)/i
+      -> (m, v) { m.epic_key = v unless v.blank? }
     when /^Created/i
       -> (m, v) { m.issue_created_at = jira_date(v) unless v.blank? }
     when /^Priority/i

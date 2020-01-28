@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2020_01_24_162311) do
     t.string "project_name", limit: 30
     t.string "issue_type", limit: 20
     t.string "issue_key", limit: 30
+    t.string "epic_key", limit: 30
     t.bigint "issue_id", null: false
     t.integer "story_points", default: 0, null: false
     t.string "summary"
@@ -63,6 +64,7 @@ ActiveRecord::Schema.define(version: 2020_01_24_162311) do
     t.string "product_component", limit: 30
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["epic_key"], name: "index_issues_on_epic_key"
     t.index ["issue_created_at"], name: "index_issues_on_issue_created_at"
     t.index ["issue_id"], name: "index_issues_on_issue_id", unique: true
     t.index ["issue_key"], name: "index_issues_on_issue_key"
