@@ -1,0 +1,30 @@
+<h1><%= @issue.issue_key %></h1>
+
+<dl>
+  <% IssuesController::COLS_TO_HEADERS.each do |k, v| %>
+    <dt><%= v %></dt>
+    <dd><%= @issue[k] %></dd>
+  <% end %>
+
+  <dt>Components</dt>
+  <dd>
+    <% if @issue.issue_components.count > 0 %>
+      <% @issue.issue_components.each do |ic| %>
+      <ul>
+        <li><%= ic.name %></li>
+      </ul>
+      <% end %>
+    <% end %>
+  </dd>
+
+  <dt>Labels</dt>
+  <dd>
+    <% if @issue.issue_labels.count > 0 %>
+      <% @issue.issue_labels.each do |il| %>
+      <ul>
+        <li><%= il.name %></li>
+      </ul>
+      <% end %>
+    <% end %>
+  </dd>
+</dl>
