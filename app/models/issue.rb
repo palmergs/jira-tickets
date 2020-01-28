@@ -30,6 +30,8 @@ class Issue < ApplicationRecord
   has_many :issue_labels
   has_many :issue_sprints
 
+  scope :warm, -> { where('status != ?', 'Icebox') }
+
   scope :sup, -> { where(project: 'SUP') }
   scope :ruby, -> { where(project: 'RUBY') }
   scope :python, -> { where(project: 'PYT') }
@@ -48,6 +50,21 @@ class Issue < ApplicationRecord
 
   scope :with_label, ->(labels) {
     joins(:issue_labels).where(issue_labels: { name: Array(labels) })
+  }
+
+  scope :q, ->(quarter, year, field = :issue_created_at) {
+    st = case quarter
+         when 1
+           Date.new(year, 1, 1)
+         when 2
+           Date.new(year, 3, 1)
+         when 3
+           Date.new(year, 6, 1)
+         when 4
+           Date.new(year, 9, 1)
+         end
+     en = st + 3.months
+     where(field.to_sym => st..en)
   }
 
   scope :q1, ->(field = :issue_created_at, year = 2020) {
@@ -74,22 +91,27 @@ class Issue < ApplicationRecord
     where(field.to_sym => st..en)
   }
 
+  scope :issue_type, ->(it) { where(issue_type: it) }
   scope :issue_types, -> {
     where('issue_type is not null').group(:issue_type)
   }
 
+  scope :priority, ->(pr) { where(priority: pr) }
   scope :priorities, -> {
     where('priority is not null').group(:priority)
   }
 
+  scope :ticket_origin, ->(to) { where(ticket_origin: to) }
   scope :ticket_origins, -> {
     group(:ticket_origin)
   }
 
+  scope :origin, ->(o) { where(origin: o) }
   scope :origins, -> {
     group(:origin)
   }
 
+  scope :product_component, ->(pc) { where(product_component: pc) }
   scope :product_components, -> {
     group(:product_component)
   }
