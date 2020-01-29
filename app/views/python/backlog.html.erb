@@ -1,0 +1,59 @@
+<h1>Python Backlog</h1>
+
+<h3>Backlog by Month</h3>
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Points</th>
+      <th>Tickets</th>
+      <th>Unpointed</th>
+      <th>Bugs</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <th>Oct 2019</th>
+    <td><%= @oct.sum(:story_points) %></td>
+    <td><%= @oct.count %></td>
+    <td><%= @oct.where(story_points: 0).count %></td>
+    <td><%= @oct.issue_type('Bug').count %></td>
+  </tr>
+  <tr>
+    <th>Nov 2019</th>
+    <td><%= @nov.sum(:story_points) %></td>
+    <td><%= @nov.count %></td>
+    <td><%= @nov.where(story_points: 0).count %></td>
+    <td><%= @nov.issue_type('Bug').count %></td>
+  </tr>
+  <tr>
+    <th>Dec 2019</th>
+    <td><%= @dec.sum(:story_points) %></td>
+    <td><%= @dec.count %></td>
+    <td><%= @dec.where(story_points: 0).count %></td>
+    <td><%= @dec.issue_type('Bug').count %></td>
+  </tr>
+  <tr>
+    <th>Jan 2020</th>
+    <td><%= @jan.sum(:story_points) %></td>
+    <td><%= @jan.count %></td>
+    <td><%= @jan.where(story_points: 0).count %></td>
+    <td><%= @jan.issue_type('Bug').count %></td>
+  </tr>
+  </tbody>
+</table>
+
+<h3>Backlog Summary</h3>
+<table>
+  <% @jan.issue_types.count.each do |typ, count| %>
+    <tr>
+      <th><%= typ %></th>
+      <td>Count: <%= count %></th>
+      <td>Points: <%= @jan.issue_type(typ).sum(:story_points) %></td>
+      <td>Unpointed: <%= @jan.issue_type(typ).where(story_points: 0).count %></td>
+      <% @jan.where(issue_type: typ).priorities.count.each do |pri, cnt2| %>
+        <td><%= pri %>: <%= cnt2 %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

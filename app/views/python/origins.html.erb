@@ -1,0 +1,85 @@
+<h1>Ticket Origins</h1>
+
+<h3>Created</h3>
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2"></th>
+      <th colspan="4">Issue Types</th>
+      <th colspan="4">Product Component</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>Points</th>
+      <th>Tickets</th>
+      <th>Story</th>
+      <th>Bug</th>
+      <th>Task</th>
+      <th>Invest</th>
+      <th>Platform</th>
+      <th>Protect</th>
+      <th>Assess</th>
+      <th>Other</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @origins.each_with_index do |origin, idx| %>
+      <tr>
+        <th><%= origin.nil? ? 'Unknown' : origin %></th>
+        <td><%= @created_origins[idx].sum(:story_points) %></td>
+        <td><%= @created_origins[idx].count %></td>
+        <td><%= @created_origins[idx].issue_type('Story').count %></td>
+        <td><%= @created_origins[idx].issue_type('Bug').count %></td>
+        <td><%= @created_origins[idx].issue_type('Task').count %></td>
+        <td><%= @created_origins[idx].issue_type('Investigation').count %></td>
+        <td><%= @created_origins[idx].product_component('Platform').count %></td>
+        <td><%= @created_origins[idx].product_component('Protect').count %></td>
+        <td><%= @created_origins[idx].product_component('Assess').count %></td>
+        <td><%= @created_origins[idx].product_component('Other').count + @created_origins[idx].product_component(nil).count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>Resolved</h3>
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2"></th>
+      <th colspan="4">Issue Types</th>
+      <th colspan="4">Product Component</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>Points</th>
+      <th>Tickets</th>
+      <th>Story</th>
+      <th>Bug</th>
+      <th>Task</th>
+      <th>Invest</th>
+      <th>Platform</th>
+      <th>Protect</th>
+      <th>Assess</th>
+      <th>Other</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @origins.each_with_index do |origin, idx| %>
+      <tr>
+        <th><%= origin.nil? ? 'Unknown' : origin %></th>
+        <td><%= @resolved_origins[idx].sum(:story_points) %></td>
+        <td><%= @resolved_origins[idx].count %></td>
+        <td><%= @resolved_origins[idx].issue_type('Story').count %></td>
+        <td><%= @resolved_origins[idx].issue_type('Bug').count %></td>
+        <td><%= @resolved_origins[idx].issue_type('Task').count %></td>
+        <td><%= @resolved_origins[idx].issue_type('Investigation').count %></td>
+        <td><%= @resolved_origins[idx].product_component('Platform').count %></td>
+        <td><%= @resolved_origins[idx].product_component('Protect').count %></td>
+        <td><%= @resolved_origins[idx].product_component('Assess').count %></td>
+        <td><%= @resolved_origins[idx].product_component('Other').count + @created_origins[idx].product_component(nil).count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

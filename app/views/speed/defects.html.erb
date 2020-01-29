@@ -1,0 +1,43 @@
+<h1>SpeedRacer Defects</h1>
+
+<h3>
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <% @weeks.each do |dt| %>
+        <th><%= dt.strftime('%b %e') %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Created</th>
+      <% @opened_weeks.each do |bin| %>
+        <td><%= bin.values.count %></td>
+      <% end %>
+    </tr>
+    <!--
+    <tr>
+      <th>Points</th>
+      <% @opened_weeks.each do |bin| %>
+        <td><%= Issue.sum(bin.values.map(&:story_points)).to_i %></td>
+      <% end %>
+    </tr>
+    -->
+    <tr>
+      <th>Resolved</th>
+      <% @closed_weeks.each do |bin| %>
+        <td><%= bin.values.count %></td>
+      <% end %>
+    </tr>
+    <!--
+    <tr>
+      <th>Points</th>
+      <% @closed_weeks.each do |bin| %>
+        <td><%= Issue.sum(bin.values.map(&:story_points)).to_i %></td>
+      <% end %>
+    </tr>
+    -->
+  </tbody>
+</table>
