@@ -1,3 +1,23 @@
 Rails.application.routes.draw do
+  get 'speed/velocity'
+  get 'speed/backlog'
+  get 'speed/origins'
+  get 'speed/defects'
+  get 'speed/unplanned'
+  get 'tandv/velocity'
+  get 'tandv/backlog'
+  get 'tandv/origins'
+  get 'tandv/defects'
+  get 'tandv/unplanned'
+  get 'ruby/velocity'
+  get 'ruby/backlog'
+  get 'ruby/origins'
+  get 'ruby/defects'
+  get 'ruby/unplanned'
+  get 'python/velocity'
+  get 'python/backlog'
+  get 'python/origins'
+  get 'python/defects'
+  get 'python/unplanned'
   resources :issues, only: [:index, :show]  
 end

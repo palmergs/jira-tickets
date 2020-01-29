@@ -3,6 +3,8 @@
 require 'csv'
 
 class Issue < ApplicationRecord
+  include Sprints
+
   class Bin
     attr_reader :key, :values
 
@@ -40,6 +42,7 @@ class Issue < ApplicationRecord
   scope :goagent, -> { where(project: 'GO') }
   scope :tandv, -> { where(project: 'TV') }
 
+  scope :tracked, -> { where(issue_type: %w[Bug Story Task Investigation]) }
   scope :bugs, -> { where(issue_type: 'Bug') }
   scope :stories, -> { where(issue_type: 'Story') }
   scope :tasks, -> { where(issue_type: 'Task') }
@@ -85,7 +88,7 @@ class Issue < ApplicationRecord
     where(field.to_sym => st..en)
   }
 
-  scope :q4, ->(field = :issue_created_at, year = 2019) { 
+  scope :q4, ->(field = :issue_created_at, year = 2019) {
     st = Date.new(year, 10, 01)
     en = st + 3.months
     where(field.to_sym => st..en)
@@ -151,14 +154,14 @@ class Issue < ApplicationRecord
     sum / (values.length - 1).to_f
   end
 
-  def std_dev values
+  def self.std_dev values
     return 0 if values.empty?
 
     var = sample_variance(values)
     Math.sqrt(var)
   end
 
-  # Brute force move issues into an array element corresponding 
+  # Brute force move issues into an array element corresponding
   # to the week when it occurred.
   def self.bin_into_weeks start_dt, issues, field
     last_dt = start_dt + 7.days
@@ -180,10 +183,23 @@ class Issue < ApplicationRecord
     arr
   end
 
+  # Brute force move of issues into sprints
+  def self.bin_into_sprints year, quarter, issues, field
+    sprints = SPRINTS[year][quarter].map {|dt| dt..(dt + 14.days) }
+    bins = [[], [], [], [], [], []]
+    issues.each do |issue|
+      dt = issue[field]
+      next unless dt
+
+      sprints.each_with_index {|sp, idx| bins[idx] << issue if sp.include?(dt) }
+    end
+    bins
+  end
+
   def self.map_to_count issues, field = nil
     return issues.count unless field
     return 0 if issues.empty?
-    
+
     issues.inject(0) {|sum, issue| sum + issue[field].to_i }
   end
 
