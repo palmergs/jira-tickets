@@ -52,5 +52,15 @@ class RubyController < ApplicationController
   end
 
   def unplanned
+    @unplanned = Issue.ruby.tracked.q4(:issue_created_at).where('resolved_at is not null').with_label(['unplanned', 'Unplanned'])
+    @bins = [[], [], [], []]
+    @unplanned.each do |u|
+      days = (u.resolved_at.to_date - u.issue_created_at.to_date).to_i
+
+      @bins[0] << u if days <= 7
+      @bins[1] << u if days > 7 && days <= 14
+      @bins[2] << u if days > 14 && days <= 30
+      @bins[3] << u if days > 30
+    end
   end
 end

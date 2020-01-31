@@ -41,3 +41,26 @@
     -->
   </tbody>
 </table>
+
+<h3>Defect Summary</h3>
+<ul>
+  <li><%= @opened.count %> Defects Opened
+    <ul>
+      <% @opened.priorities.count.each do |k, v| %>
+        <li><%= v %> <%= k %></li>
+      <% end %>
+    </ul>
+  </li>
+  <li><%= @closed.count %> Defects Closed
+    <ul>
+      <% @closed.priorities.count.each do |k, v| %>
+        <li><%= v %> <%= k %></li>
+      <% end %>
+    </ul>
+  </li>
+  <li><%= @opened.where('resolved_at is null').count.to_f / @opened.count %>% Escape Rate</li>
+</ul>
+
+<p>
+<%= @closed.map {|c| (c.resolved_at.to_date - c.issue_created_at.to_date).to_i }.sort.join(', ') %>
+</p>

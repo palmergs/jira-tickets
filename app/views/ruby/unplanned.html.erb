@@ -1,2 +1,15 @@
-<h1>Ruby#unplanned</h1>
-<p>Find me in app/views/ruby/unplanned.html.erb</p>
+<h1>Unplanned</h1>
+
+<ul>
+  <li><%= @unplanned.count %>
+    <ul>
+      <% @unplanned.issue_types.count.each do |k, v| %>
+        <li><%= v %> <%= k %></li>
+      <% end %>
+    </ul>
+  </li>
+  <li><%= @bins[0].count %> &lt;= 7 days</li>
+  <li><%= @bins[1].count %> 8 - 14 days</li>
+  <li><%= @bins[2].count %> 15 - 30 days</li>
+  <li><%= @bins[3].count %> &gt; 30 days</li>
+</ul>
