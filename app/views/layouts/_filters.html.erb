@@ -1,0 +1,23 @@
+<%= form_tag({}, method: :get) do |f| %>
+  <div class="form-group">
+    <label>Year</label>
+    <%= text_field_tag :y, params[:y], class: 'form-control form-control-sm' %>
+  </div>
+  <div class="form-group">
+    <label>Quarter</label>
+    <%= select_tag :q, options_for_select(%w[1 2 3 4], params[:q]), class: 'form-control form-control-sm' %>
+  </div>
+  <div class="form-group">
+    <label>Project</label>
+    <%= select_tag :p, options_for_select(%w[All Python Ruby Go Speedracer GoAgent TandV], params[:p]), class: 'form-control form-control-sm' %>
+  </div>
+  <div class="form-group">
+    <label>Issue Type</label>
+    <%= select_tag :t, options_for_select(%w[Tracked Bug Story Task Investigation Activity Epic], params[:t]), class: 'form-control form-control-sm' %>
+  </div>
+  <div class="form-group">
+    <label>Temperature <%= fa_icon 'question-circle', data: { toggle: 'tooltip' }, title: 'Warm: Not in Icebox, Cold: In Icebox' %></label>
+    <%= select_tag :w, options_for_select(%w[Warm Cold All], params[:w]), class: 'form-control form-control-sm' %>
+  </div>
+  <%= submit_tag 'Filter', class: 'btn btn-primary' %>
+<% end %>

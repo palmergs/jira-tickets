@@ -1,15 +1,20 @@
-<h1>Unplanned</h1>
+<div class="col-2">
+  <%= render 'layouts/filters' %>
+</div>
+<div class="col">
+  <h1><%= params[:p] %> Unplanned</h1>
 
-<ul>
-  <li><%= @unplanned.count %>
-    <ul>
-      <% @unplanned.issue_types.count.each do |k, v| %>
-        <li><%= v %> <%= k %></li>
-      <% end %>
-    </ul>
-  </li>
-  <li><%= @bins[0].count %> &lt;= 7 days</li>
-  <li><%= @bins[1].count %> 8 - 14 days</li>
-  <li><%= @bins[2].count %> 15 - 30 days</li>
-  <li><%= @bins[3].count %> &gt; 30 days</li>
-</ul>
+  <ul>
+    <li><%= @unplanned.count %>
+      <ul>
+        <% @unplanned.issue_types.count.each do |k, v| %>
+          <li><%= v %> <%= k %></li>
+        <% end %>
+      </ul>
+    </li>
+    <li><%= @bins[0].count %> &lt;= 7 days</li>
+    <li><%= @bins[1].count %> 8 - 14 days</li>
+    <li><%= @bins[2].count %> 15 - 30 days</li>
+    <li><%= @bins[3].count %> &gt; 30 days</li>
+  </ul>
+</div>

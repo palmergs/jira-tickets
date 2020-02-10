@@ -20,3 +20,11 @@ import "bootstrap";
 import "@fortawesome/fontawesome-free/js/all";
 import "./custom";
 import "../stylesheets/application";
+
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
+$(function() {
+  $('[data-toggle="popover"]').popover();
+});

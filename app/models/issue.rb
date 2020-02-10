@@ -33,6 +33,16 @@ class Issue < ApplicationRecord
   has_many :issue_sprints
 
   scope :warm, -> { where('status != ?', 'Icebox') }
+  scope :temperature, ->(w) {
+    case w
+    when /warm/i
+      where('status != ?', 'Icebox')
+    when /cold/i
+      where('status == ?', 'Icebox')
+    else
+      where('status is not null')
+    end
+  }
 
   scope :sup, -> { where(project: 'SUP') }
   scope :ruby, -> { where(project: 'RUBY') }
@@ -41,11 +51,49 @@ class Issue < ApplicationRecord
   scope :speed, -> { where(project: 'SPEED') }
   scope :goagent, -> { where(project: 'GO') }
   scope :tandv, -> { where(project: 'TV') }
+  scope :project, ->(p) {
+    prj = case p
+          when /ruby/i
+            'RUBY'
+          when /pyt(hon)?/i
+            'PYT'
+          when /go/i
+            %w[SPEED GO]
+          when /speed(racer)?/i
+            'SPEED'
+          when /goagent/i
+            'GO'
+          when /tv|tandv|(test and validation)/i
+            'TV'
+          else
+            %w[RUBY PYT SPEED GO TV]
+          end
+    where(project: prj)
+  }
 
   scope :tracked, -> { where(issue_type: %w[Bug Story Task Investigation]) }
   scope :bugs, -> { where(issue_type: 'Bug') }
   scope :stories, -> { where(issue_type: 'Story') }
   scope :tasks, -> { where(issue_type: 'Task') }
+  scope :tickets, ->(t) {
+    tik = case t
+          when /bug(s)?/i
+            'Bug'
+          when /story/i
+            'Story'
+          when /task/i
+            'Task'
+          when /investigation/i
+            'Investigation'
+          when /release/i
+            'Release'
+          when /epic/i
+            'Epic'
+          else
+            %w[Bug Story Task Investigation]
+          end
+    where(issue_type: tik)
+  }
 
   scope :with_component, ->(components) {
     joins(:issue_components).where(issue_components: { name: Array(components) })
