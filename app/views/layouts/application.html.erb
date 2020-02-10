@@ -10,7 +10,34 @@
   </head>
 
   <body>
-    <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">
+        <img src="<%= asset_pack_path 'media/images/global.logo.png' %>" width="30" height="30" class="d-inline-block align-top" alt="">
+        Quarterly Operations Review
+      </a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="pythonDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Python
+            </a>
+            <div class="dropdown-menu" aria-labelledby="pythonDropdown">
+              <%= link_to 'Backlog', python_backlog_path, class: 'dropdown-item' %>
+              <%= link_to 'Defects', python_defects_path, class: 'dropdown-item' %>
+              <%= link_to 'Origins', python_origins_path, class: 'dropdown-item' %>
+              <%= link_to 'Unplanned', python_unplanned_path, class: 'dropdown-item' %>
+              <%= link_to 'Velocity', python_velocity_path, class: 'dropdown-item' %>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div id="main" class="container-fluid">
       <div class="row">
         <%= yield %>
       </div>

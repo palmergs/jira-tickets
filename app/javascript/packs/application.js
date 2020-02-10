@@ -13,18 +13,10 @@ require("channels")
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
 // or the `imagePath` JavaScript helper below.
 //
-// const images = require.context('../images', true)
-// const imagePath = (name) => images(name, true)
+const images = require.context('../images', true)
+const imagePath = (name) => images(name, true)
 
 import "bootstrap";
 import "@fortawesome/fontawesome-free/js/all";
 import "./custom";
 import "../stylesheets/application";
-
-$(function() {
-  $('[data-toggle="tooltip"]').tooltip();
-});
-
-$(function() {
-  $('[data-toggle="popover"]').popover();
-});
