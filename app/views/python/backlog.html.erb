@@ -43,4 +43,20 @@
       </tr>
     <% end %>
   </table>
+
+  <div class="row">
+    <div class="col">
+      <canvas id="priorities"
+          height="200"
+          data-chart="bar"
+          data-labels="<%=raw @summary.priorities.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @summary.priorities.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col">
+      <canvas id="issue-types" height="200"></canvas>
+    </div>
+    <div class="col">
+      <canvas id="ticket-origins" height="200"></canvas>
+    </div>
+  </div>
 </div>

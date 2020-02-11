@@ -5,7 +5,8 @@ environment.plugins.append(
   new webpack.ProvidePlugin({
     $: "jquery",
     jQuery: "jquery",
-    Popper: ["popper.js", "default"]
+    Popper: ["popper.js", "default"],
+    Chart: "chartjs/chart.js"
   })
 );
 module.exports = environment;

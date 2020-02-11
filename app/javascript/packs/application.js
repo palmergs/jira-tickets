@@ -13,10 +13,46 @@ require("channels")
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
 // or the `imagePath` JavaScript helper below.
 //
-const images = require.context('../images', true)
-const imagePath = (name) => images(name, true)
+// const images = require.context('../images', true)
+// const imagePath = (name) => images(name, true)
+require.context('../images', true)
 
 import "bootstrap";
 import "@fortawesome/fontawesome-free/js/all";
-import "./custom";
 import "../stylesheets/application";
+import _ from "lodash";
+
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="popover"]').popover();
+});
+
+$(function() {
+  $('[data-chart="bar"]').each(function() {
+
+    var ctx = this.getContext('2d');
+    var labels = $(this).data('labels').toString().split(',');
+    var values = $(this).data('values').toString().split(',').map(function(x) { return parseInt(x);})
+    console.log(values);
+    var obj = {
+      // The type of chart we want to create
+      type: 'bar',
+
+      // The data for our dataset
+      data: {
+          labels: labels,
+          datasets: [{
+              label: 'Priorities',
+              backgroundColor: 'rgb(255, 99, 132)',
+              borderColor: 'rgb(255, 99, 132)',
+              data: values
+          }]
+      },
+
+      // Configuration options go here
+      options: {}
+    };
+    console.log(obj);
+    new Chart(ctx, obj);
+  });
+})
