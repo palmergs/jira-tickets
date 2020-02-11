@@ -48,15 +48,26 @@
     <div class="col">
       <canvas id="priorities"
           height="200"
+          title="Backlog Priority Values"
           data-chart="bar"
           data-labels="<%=raw @summary.priorities.count.map {|k, _| k }.join(',') %>"
           data-values="<%=raw @summary.priorities.count.map {|_, v| v }.join(',') %>"></canvas>
     </div>
     <div class="col">
-      <canvas id="issue-types" height="200"></canvas>
+      <canvas id="issue-types"
+          height="200"
+          title="Backlog by Issue Type"
+          data-chart="bar"
+          data-labels="<%=raw @summary.issue_types.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @summary.issue_types.count.map {|_, v| v }.join(',') %>"></canvas>
     </div>
     <div class="col">
-      <canvas id="ticket-origins" height="200"></canvas>
+      <canvas id="ticket-origins"
+          height="200"
+          title="Backlog by Ticket Origins"
+          data-chart="bar"
+          data-labels="<%=raw @summary.ticket_origins.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @summary.ticket_origins.count.map {|_, v| v }.join(',') %>"></canvas>
     </div>
   </div>
 </div>

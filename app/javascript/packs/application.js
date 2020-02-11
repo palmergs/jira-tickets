@@ -20,39 +20,73 @@ require.context('../images', true)
 import "bootstrap";
 import "@fortawesome/fontawesome-free/js/all";
 import "../stylesheets/application";
-import _ from "lodash";
+import Chart from "chart.js";
 
 $(function() {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
 });
 
-$(function() {
+$(document).on('turbolinks:load', function() {
+  // console.log("in turbolinks:load...")
   $('[data-chart="bar"]').each(function() {
 
-    var ctx = this.getContext('2d');
-    var labels = $(this).data('labels').toString().split(',');
-    var values = $(this).data('values').toString().split(',').map(function(x) { return parseInt(x);})
-    console.log(values);
-    var obj = {
-      // The type of chart we want to create
+    // console.log("in canvas each..."+ this);
+    const ctx = this.getContext('2d');
+    const labels = $(this).data('labels').toString().split(",");
+    const values = $(this).data('values').toString().split(",").map(function(val) { return parseInt(val); });
+    const title = $(this).attr('title').toString();
+    const backgrounds = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 206, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(255, 159, 64, 0.2)'
+    ].slice(0, values.length);
+
+    const borders = [
+      'rgba(255, 99, 132, 1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)'
+    ].slice(0, values.length);
+
+
+    // console.log(ctx);
+
+    // $(this).addClass('with-border');
+    const chart = new Chart(ctx, {
       type: 'bar',
-
-      // The data for our dataset
       data: {
-          labels: labels,
-          datasets: [{
-              label: 'Priorities',
-              backgroundColor: 'rgb(255, 99, 132)',
-              borderColor: 'rgb(255, 99, 132)',
-              data: values
-          }]
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: backgrounds,
+          borderColor: borders,
+          borderWidth: 1
+        }]
       },
-
-      // Configuration options go here
-      options: {}
-    };
-    console.log(obj);
-    new Chart(ctx, obj);
+      options: {
+        title: {
+          display: true,
+          text: title
+        },
+        legend: {
+          display: false
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+    console.log(chart);
   });
-})
+});
+
