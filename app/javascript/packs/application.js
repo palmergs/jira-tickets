@@ -27,38 +27,34 @@ $(function() {
   $('[data-toggle="popover"]').popover();
 });
 
-$(document).on('turbolinks:load', function() {
-  // console.log("in turbolinks:load...")
-  $('[data-chart="bar"]').each(function() {
+const BACKGROUNDS = [
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 206, 86, 0.2)',
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(153, 102, 255, 0.2)',
+  'rgba(255, 159, 64, 0.2)'
+];
 
-    // console.log("in canvas each..."+ this);
+const BORDERS = [
+  'rgba(255, 99, 132, 1)',
+  'rgba(54, 162, 235, 1)',
+  'rgba(255, 206, 86, 1)',
+  'rgba(75, 192, 192, 1)',
+  'rgba(153, 102, 255, 1)',
+  'rgba(255, 159, 64, 1)'
+];
+
+$(document).on('turbolinks:load', function() {
+  $('[data-chart="bar"]').each(function() {
     const ctx = this.getContext('2d');
     const labels = $(this).data('labels').toString().split(",");
     const values = $(this).data('values').toString().split(",").map(function(val) { return parseInt(val); });
     const title = $(this).attr('title').toString();
-    const backgrounds = [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(255, 206, 86, 0.2)',
-      'rgba(75, 192, 192, 0.2)',
-      'rgba(153, 102, 255, 0.2)',
-      'rgba(255, 159, 64, 0.2)'
-    ].slice(0, values.length);
+    const backgrounds = BACKGROUNDS.slice(0, values.length);
+    const borders = BORDERS.slice(0, values.length);
 
-    const borders = [
-      'rgba(255, 99, 132, 1)',
-      'rgba(54, 162, 235, 1)',
-      'rgba(255, 206, 86, 1)',
-      'rgba(75, 192, 192, 1)',
-      'rgba(153, 102, 255, 1)',
-      'rgba(255, 159, 64, 1)'
-    ].slice(0, values.length);
-
-
-    // console.log(ctx);
-
-    // $(this).addClass('with-border');
-    const chart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'bar',
       data: {
         labels: labels,
@@ -74,19 +70,85 @@ $(document).on('turbolinks:load', function() {
           display: true,
           text: title
         },
-        legend: {
-          display: false
-        },
+        legend: { display: false },
         scales: {
           yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
+            ticks: { beginAtZero: true }
           }]
         }
       }
     });
-    console.log(chart);
+  });
+
+  // <canvas title="test"
+  //     data-chart="multi-axis" data-labels="a,b"
+  //     data-count="2" data-set0="Label:axis1:1,2,3" data-set1="Label:axis2:3,2,1">
+  $('[data-chart="multi-axis"]').each(function() {
+    const ctx = this.getContext('2d');
+    const labels = $(this).data('labels').toString().split(",");
+    const count = parseInt($(this).data('count'));
+    const title = $(this).attr('title').toString();
+    const datasets = new Array(count);
+
+    let leftAxis = null;
+    let rightAxis = null;
+    for(let i = 0; i < count; ++i) {
+      var data = $(this).data('set'+ i);
+      var sections = data.split(':');
+      var label = sections[0];
+      var axis = sections[1];
+
+      // The first dataset gets to be the left axis
+      if(leftAxis === null) { leftAxis = axis; }
+      else if(leftAxis != axis) { rightAxis = axis; }
+
+      var values = sections[2];
+      datasets[i] = {
+        label: label,
+        borderColor: BORDERS[i],
+        backgroundColor: BACKGROUNDS[i],
+        fill: false,
+        data: values.split(',').map(function(val) { return parseInt(val); }),
+        yAxisID: axis
+      }
+
+      // To distinguish the lines; the datasets for the left axis
+      // use the default line smoothing; the other datasets
+      // use straight lines
+      if(axis != leftAxis) { datasets[i].lineTension = 0; }
+    }
+
+    new Chart.Line(ctx, {
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        maintainAspectRatio: false,
+        title: {
+          display: true,
+          text: title
+        },
+        stacked: false,
+        scales: {
+          yAxes: [
+            {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              id: leftAxis
+            },
+            {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              id: rightAxis,
+              gridLines: { drawOnChartArea: false }
+            },
+          ]
+        }
+      }
+    })
   });
 });
 

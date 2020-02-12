@@ -29,20 +29,41 @@
     </tbody>
   </table>
 
-  <h3>Backlog Summary</h3>
-  <table class="table">
-    <% @summary.issue_types.count.each do |typ, count| %>
-      <tr>
-        <th><%= typ %></th>
-        <td>Count: <%= count %></th>
-        <td>Points: <%= @summary.issue_type(typ).sum(:story_points) %></td>
-        <td>Unpointed: <%= @summary.issue_type(typ).where(story_points: 0).count %></td>
-        <% @summary.where(issue_type: typ).priorities.count.each do |pri, cnt2| %>
-          <td><%= pri %>: <%= cnt2 %></td>
+  <div class="row">
+    <div class="col">
+      <canvas id="backlog-trends"
+          title="Backlog Trends Q<%= params[:q] %> <%= params[:y] %>"
+          height="400"
+          data-chart="multi-axis"
+          data-count="4"
+          data-labels="<%= @months.keys.map {|m| m.strftime('%B %Y') }.join(',') %>"
+          data-set0="Story Points:points:<%= @months.values.map {|q| q.sum(:story_points) }.join(',') %>"
+          data-set1="Tickets:tickets:<%= @months.values.map {|q| q.count }.join(',')%>"
+          data-set2="Unpointed:tickets:<%= @months.values.map {|q| q.where(story_points: 0).count }.join(',') %>"
+          data-set3="Bugs:tickets:<%= @months.values.map {|q| q.issue_type('Bug').count }.join(',') %>" >
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col">
+      <h3>Backlog Summary</h3>
+      <table class="table">
+        <% @summary.issue_types.count.each do |typ, count| %>
+          <tr>
+            <th><%= typ %></th>
+            <td>Count: <%= count %></th>
+            <td>Points: <%= @summary.issue_type(typ).sum(:story_points) %></td>
+            <td>Unpointed: <%= @summary.issue_type(typ).where(story_points: 0).count %></td>
+            <% @summary.where(issue_type: typ).priorities.count.each do |pri, cnt2| %>
+              <td><%= pri %>: <%= cnt2 %></td>
+            <% end %>
+          </tr>
         <% end %>
-      </tr>
-    <% end %>
-  </table>
+      </table>
+    </div>
+  </div>
 
   <div class="row">
     <div class="col">
