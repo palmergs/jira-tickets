@@ -42,6 +42,18 @@ class PythonController < ApplicationController
         tickets(params[:t]).
         q(params[:q].to_i, params[:y].to_i, :resolved_at)
     @resolved_origins = @origins.map {|to| @resolved.ticket_origin(to) }
+
+
+    @created_sprints = Issue.bin_into_sprints(
+        params[:y].to_i,
+        params[:q].to_i,
+        @created,
+        :issue_created_at)
+    @resolved_sprints = Issue.bin_into_sprints(
+        params[:y].to_i,
+        params[:q].to_i,
+        @resolved,
+        :resolved_at)
   end
 
   def defects
@@ -58,11 +70,8 @@ class PythonController < ApplicationController
         q(params[:q].to_i, params[:y].to_i, :resolved_at)
 
     dt = Date.new(params[:y].to_i, (params[:q].to_i * 3) - 2, 1)
-    @opened_weeks = Issue.bin_into_weeks(dt, @opened, :issue_created_at)
-    @closed_weeks = Issue.bin_into_weeks(dt, @closed, :resolved_at)
-    @weeks = @opened_weeks.length > @closed_weeks.length ?
-        @opened_weeks.map(&:key) :
-        @closed_weeks.map(&:key)
+    @opened_weeks = Issue.bin_into_weeks(dt, @opened, :issue_created_at, pad_to: dt+3.months)
+    @closed_weeks = Issue.bin_into_weeks(dt, @closed, :resolved_at, pad_to: dt+3.months)
   end
 
   def unplanned
@@ -75,7 +84,7 @@ class PythonController < ApplicationController
         tickets(params[:t]).
         q(params[:q].to_i, params[:y].to_i, :issue_created_at).
         where('resolved_at is not null').
-        with_label(['unplanned', 'Unplanned'])
+        with_label(%w[unplanned Unplanned])
     @bins = [[], [], [], []]
     @unplanned.each do |u|
       days = (u.resolved_at.to_date - u.issue_created_at.to_date).to_i
@@ -85,5 +94,11 @@ class PythonController < ApplicationController
       @bins[2] << u if days > 14 && days <= 30
       @bins[3] << u if days > 30
     end
+
+    @unplanned_sprints = Issue.bin_into_sprints(
+        params[:y].to_i,
+        params[:q].to_i,
+        @unplanned,
+        :issue_created_at)
   end
 end

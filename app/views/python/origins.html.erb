@@ -1,7 +1,7 @@
 <div class="col-2">
   <%= render 'layouts/filters' %>
 </div>
-<div class="col">
+<div class="col-10">
   <h1><%= params[:p] %> Ticket Origins</h1>
 
   <h3>Created</h3>
@@ -87,4 +87,51 @@
       <% end %>
     </tbody>
   </table>
+
+  <div class="row">
+    <div class="col">
+      <canvas id="resolved-sprint"
+          height="300"
+          title="Resolved Types per Sprint"
+          data-chart="stacked"
+          data-labels="<%= @resolved_sprints.map {|bin| bin.key.strftime('%b %e') }.join(',') %>"
+          data-count="4"
+          data-set0="Story:<%= @resolved_sprints.map {|bin| bin.values.issue_type('Story').count }.join(',') %>"
+          data-set1="Bug:<%= @resolved_sprints.map {|bin| bin.values.issue_type('Bug').count }.join(',') %>"
+          data-set2="Task:<%= @resolved_sprints.map {|bin| bin.values.issue_type(%w[Task Investigation]).count }.join(',') %>"
+          data-set3="Release:<%= @resolved_sprints.map {|bin| bin.values.issue_type('Release').count }.join(',') %>" >
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <canvas id="resolved-sprint"
+          height="300"
+          title="Resolved Origin per Sprint"
+          data-chart="stacked"
+          data-labels="<%= @resolved_sprints.map {|bin| bin.key.strftime('%b %e') }.join(',') %>"
+          data-count="5"
+          data-set0="Engineering:<%= @resolved_sprints.map {|bin| bin.values.ticket_origin('Engineering').count }.join(',') %>"
+          data-set1="Support:<%= @resolved_sprints.map {|bin| bin.values.ticket_origin('Support').count }.join(',') %>"
+          data-set2="Labs:<%= @resolved_sprints.map {|bin| bin.values.ticket_origin('Labs').count }.join(',') %>"
+          data-set3="Product:<%= @resolved_sprints.map {|bin| bin.values.ticket_origin('Product').count }.join(',') %>"
+          data-set4="Unknown:<%= @resolved_sprints.map {|bin| bin.values.ticket_origin(nil).count }.join(',') %>" >
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <canvas id="resolved-sprint"
+          height="300"
+          title="Resolved Products per Sprint"
+          data-chart="stacked"
+          data-labels="<%= @resolved_sprints.map {|bin| bin.key.strftime('%b %e') }.join(',') %>"
+          data-count="5"
+          data-set0="Platform:<%= @resolved_sprints.map {|bin| bin.values.product_component('Platform').count }.join(',') %>"
+          data-set1="Assess:<%= @resolved_sprints.map {|bin| bin.values.product_component('Assess').count }.join(',') %>"
+          data-set2="Protect:<%= @resolved_sprints.map {|bin| bin.values.product_component('Protect').count }.join(',') %>"
+          data-set3="OSS:<%= @resolved_sprints.map {|bin| bin.values.product_component('OSS').count }.join(',') %>"
+          data-set4="Other / Unknown:<%= @resolved_sprints.map {|bin| bin.values.where('product_component = ? or product_component is null', 'Other').count }.join(',') %>" >
+    </div>
+  </div>
 </div>

@@ -1,15 +1,15 @@
 <div class="col-2">
   <%= render 'layouts/filters' %>
 </div>
-<div class="col">
-  <h1><%= params[:p] %> Defects</h1>
+<div class="col-10">
+  <h1><%= params[:p] %> <%= params[:t].to_s.pluralize %></h1>
 
   <table class="table">
     <thead>
       <tr>
         <th></th>
-        <% @weeks.each do |dt| %>
-          <th><%= dt.strftime('%b %e') %></th>
+        <% @opened_weeks.each do |bin| %>
+          <th><%= bin.key.strftime('%b %e') %></th>
         <% end %>
       </tr>
     </thead>
@@ -20,28 +20,150 @@
           <td><%= bin.values.count %></td>
         <% end %>
       </tr>
-      <!--
       <tr>
-        <th>Points</th>
+        <th>Created (Points)</th>
         <% @opened_weeks.each do |bin| %>
-          <td><%= Issue.sum(bin.values.map(&:story_points)).to_i %></td>
+          <td><%= bin.values.sum(:story_points) %></td>
         <% end %>
       </tr>
-      -->
       <tr>
         <th>Resolved</th>
         <% @closed_weeks.each do |bin| %>
           <td><%= bin.values.count %></td>
         <% end %>
       </tr>
-      <!--
       <tr>
-        <th>Points</th>
+        <th>Resolved (Points)</th>
         <% @closed_weeks.each do |bin| %>
-          <td><%= Issue.sum(bin.values.map(&:story_points)).to_i %></td>
+          <td><%= bin.values.sum(:story_points) %></td>
         <% end %>
       </tr>
-      -->
     </tbody>
   </table>
+
+  <div class="row">
+    <div class="col">
+      <canvas id="closed-v-opened"
+          height="400"
+          title="Closed vs Opened Issues per Week"
+          data-chart="stacked"
+          data-labels="<%= @opened_weeks.map {|bin| bin.key.strftime('%b %e') }.join(',') %>"
+          data-count="2"
+          data-set0="Opened:<%= @opened_weeks.map {|bin| bin.values.count }.join(',') %>"
+          data-set1="Closed:<%= @closed_weeks.map {|bin| -1 * bin.values.count }.join(',') %>">
+    </div>
+  </div>
+
+  <hr>
+
+  <h3>Created</h3>
+  <div class="row">
+    <div class="col-4">
+      <canvas id="priorities"
+          height="200"
+          title="Opened Priority Values"
+          data-chart="bar"
+          data-labels="<%=raw @opened.priorities.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @opened.priorities.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Opened Product Components"
+          data-chart="bar"
+          data-labels="<%=raw @opened.product_components.count.map {|k, _| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @opened.product_components.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Opened Ticket Origins"
+          data-chart="bar"
+          data-labels="<%=raw @opened.ticket_origins.count.map {|k, _| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @opened.ticket_origins.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <canvas id="priorities"
+          height="200"
+          title="Opened Priority Values"
+          data-chart="pie"
+          data-labels="<%=raw @opened.priorities.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @opened.priorities.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Opened Product Components"
+          data-chart="pie"
+          data-labels="<%=raw @opened.product_components.count.map {|k, _| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @opened.product_components.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Opened Ticket Origins"
+          data-chart="pie"
+          data-labels="<%=raw @opened.ticket_origins.count.map {|k, _| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @opened.ticket_origins.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3>Resolved</h3>
+  <div class="row">
+    <div class="col-4">
+      <canvas id="priorities"
+          height="200"
+          title="Resolved Priority Values"
+          data-chart="bar"
+          data-labels="<%=raw @closed.priorities.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @closed.priorities.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Resolved Product Components"
+          data-chart="bar"
+          data-labels="<%=raw @closed.product_components.count.map {|k, _| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @closed.product_components.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Resolved Ticket Origins"
+          data-chart="bar"
+          data-labels="<%=raw @closed.ticket_origins.count.map {|k, _| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @closed.ticket_origins.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <canvas id="priorities"
+          height="200"
+          title="Resolved Priority Values"
+          data-chart="pie"
+          data-labels="<%=raw @closed.priorities.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @closed.priorities.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Resolved Product Components"
+          data-chart="pie"
+          data-labels="<%=raw @closed.product_components.count.map {|k, _| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @closed.product_components.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Resolved Ticket Origins"
+          data-chart="pie"
+          data-labels="<%=raw @closed.ticket_origins.count.map {|k, _| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @closed.ticket_origins.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+  </div>
+
 </div>

@@ -1,7 +1,7 @@
 <div class="col-2">
   <%= render 'layouts/filters' %>
 </div>
-<div class="col">
+<div class="col-10">
   <h1><%= params[:p] %> Backlog</h1>
   <h3>Backlog by Month</h3>
   <table class="table">
@@ -66,7 +66,7 @@
   </div>
 
   <div class="row">
-    <div class="col">
+    <div class="col-4">
       <canvas id="priorities"
           height="200"
           title="Backlog Priority Values"
@@ -74,7 +74,7 @@
           data-labels="<%=raw @summary.priorities.count.map {|k, _| k }.join(',') %>"
           data-values="<%=raw @summary.priorities.count.map {|_, v| v }.join(',') %>"></canvas>
     </div>
-    <div class="col">
+    <div class="col-4">
       <canvas id="issue-types"
           height="200"
           title="Backlog by Issue Type"
@@ -82,11 +82,38 @@
           data-labels="<%=raw @summary.issue_types.count.map {|k, _| k }.join(',') %>"
           data-values="<%=raw @summary.issue_types.count.map {|_, v| v }.join(',') %>"></canvas>
     </div>
-    <div class="col">
+    <div class="col-4">
       <canvas id="ticket-origins"
           height="200"
           title="Backlog by Ticket Origins"
           data-chart="bar"
+          data-labels="<%=raw @summary.ticket_origins.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @summary.ticket_origins.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-4">
+      <canvas id="priorities"
+          height="200"
+          title="Backlog Priority Values"
+          data-chart="pie"
+          data-labels="<%=raw @summary.priorities.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @summary.priorities.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="issue-types"
+          height="200"
+          title="Backlog by Issue Type"
+          data-chart="pie"
+          data-labels="<%=raw @summary.issue_types.count.map {|k, _| k }.join(',') %>"
+          data-values="<%=raw @summary.issue_types.count.map {|_, v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-4">
+      <canvas id="ticket-origins"
+          height="200"
+          title="Backlog by Ticket Origins"
+          data-chart="pie"
           data-labels="<%=raw @summary.ticket_origins.count.map {|k, _| k }.join(',') %>"
           data-values="<%=raw @summary.ticket_origins.count.map {|_, v| v }.join(',') %>"></canvas>
     </div>

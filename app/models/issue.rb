@@ -108,11 +108,11 @@ class Issue < ApplicationRecord
          when 1
            Date.new(year, 1, 1)
          when 2
-           Date.new(year, 3, 1)
+           Date.new(year, 4, 1)
          when 3
-           Date.new(year, 6, 1)
+           Date.new(year, 7, 1)
          when 4
-           Date.new(year, 9, 1)
+           Date.new(year, 10, 1)
          end
      en = st + 3.months
      where(field.to_sym => st..en)
@@ -211,37 +211,23 @@ class Issue < ApplicationRecord
 
   # Brute force move issues into an array element corresponding
   # to the week when it occurred.
-  def self.bin_into_weeks start_dt, issues, field
-    last_dt = start_dt + 7.days
-    arr = [Bin.new(start_dt)]
-    issues.each do |issue|
-      dt = issue[field]
-      next unless dt
-      next if dt < start_dt
-
-      while dt > last_dt
-        arr << Bin.new(last_dt)
-        last_dt = last_dt + 7.days
-      end
-
-      idx = (dt.to_date - start_dt.to_date).to_i / 7
-      arr[idx] << issue
+  def self.bin_into_weeks start_dt, issues, field, pad_to: nil
+    arr = []
+    last_dt = pad_to ? pad_to : issues.max(field)
+    while start_dt < last_dt
+      next_dt = start_dt + 7.days
+      arr << Bin.new(start_dt, issues.where(field => start_dt..next_dt))
+      start_dt = next_dt
     end
-
     arr
   end
 
   # Brute force move of issues into sprints
   def self.bin_into_sprints year, quarter, issues, field
     sprints = SPRINTS[year][quarter].map {|dt| dt..(dt + 14.days) }
-    bins = [[], [], [], [], [], []]
-    issues.each do |issue|
-      dt = issue[field]
-      next unless dt
-
-      sprints.each_with_index {|sp, idx| bins[idx] << issue if sp.include?(dt) }
+    sprints.map do |range|
+      Bin.new(range.first, issues.where(field => range))
     end
-    bins
   end
 
   def self.map_to_count issues, field = nil

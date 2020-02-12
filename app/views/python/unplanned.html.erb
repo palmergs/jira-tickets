@@ -1,20 +1,55 @@
 <div class="col-2">
   <%= render 'layouts/filters' %>
 </div>
-<div class="col">
+<div class="col-10">
   <h1><%= params[:p] %> Unplanned</h1>
 
-  <ul>
-    <li><%= @unplanned.count %>
-      <ul>
-        <% @unplanned.issue_types.count.each do |k, v| %>
-          <li><%= v %> <%= k %></li>
-        <% end %>
-      </ul>
-    </li>
-    <li><%= @bins[0].count %> &lt;= 7 days</li>
-    <li><%= @bins[1].count %> 8 - 14 days</li>
-    <li><%= @bins[2].count %> 15 - 30 days</li>
-    <li><%= @bins[3].count %> &gt; 30 days</li>
-  </ul>
+  <div class="row">
+    <div class="col-3">
+      <canvas id="time-to-resolve"
+          height="200"
+          title="Time to Resolve"
+          data-chart="bar"
+          data-labels="1 - 7 days,8 - 14 days,15 - 30 days,31+ days"
+          data-values="<%=raw @bins.map {|bin| bin.count }.join(',') %>"></canvas>
+    </div>
+    <div class="col-3">
+      <canvas id="ticket-origin"
+          height="200"
+          title="Ticket Origins"
+          data-chart="bar"
+          data-labels="<%=raw @unplanned.ticket_origins.count.map {|k,_| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @unplanned.ticket_origins.count.map {|_,v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-3">
+      <canvas id="issue-types"
+          height="200"
+          title="Ticket Types"
+          data-chart="bar"
+          data-labels="<%=raw @unplanned.issue_types.count.map {|k,_| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @unplanned.issue_types.count.map {|_,v| v }.join(',') %>"></canvas>
+    </div>
+    <div class="col-3">
+      <canvas id="product-components"
+          height="200"
+          title="Product Components"
+          data-chart="bar"
+          data-labels="<%=raw @unplanned.product_components.count.map {|k,_| unknown?(k) }.join(',') %>"
+          data-values="<%=raw @unplanned.product_components.count.map {|_,v| v }.join(',') %>"></canvas>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <canvas id="unplanned-sprint"
+          height="300"
+          title="Unplanned per Sprint"
+          data-chart="stacked"
+          data-labels="<%= @unplanned_sprints.map {|bin| bin.key.strftime('%b %e') }.join(',') %>"
+          data-count="3"
+          data-set0="Story:<%= @unplanned_sprints.map {|bin| bin.values.issue_type('Story').count }.join(',') %>"
+          data-set1="Bug:<%= @unplanned_sprints.map {|bin| bin.values.issue_type('Bug').count }.join(',') %>"
+          data-set2="Task:<%= @unplanned_sprints.map {|bin| bin.values.issue_type(%w[Task Investigation]).count }.join(',') %>" >
+    </div>
+  </div>
 </div>
