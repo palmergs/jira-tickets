@@ -1,5 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe IssueLabel, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'can be instantiated' do
+    expect(IssueLabel.new).to_not be_nil
+  end
 end

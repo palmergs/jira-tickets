@@ -97,12 +97,24 @@ $(document).on('turbolinks:load', function() {
       var sections = data.split(':');
       var label = sections[0];
       var values = sections[1];
-      datasets[i] = {
-        label: label,
-        borderColor: BORDERS[i],
-        backgroundColor: BACKGROUNDS[i],
-        borderWidth: 1,
-        data: values.split(',').map(function(val) { return parseInt(val); })
+      if(sections.length > 2) {
+        var stack = sections[2];
+        datasets[i] = {
+          label,
+          borderColor: BORDERS[i],
+          backgroundColor: BACKGROUNDS[i],
+          borderWidth: 1,
+          stack,
+          data: values.split(',').map(function(val) { return parseInt(val); })
+        }
+      } else {
+        datasets[i] = {
+          label,
+          borderColor: BORDERS[i],
+          backgroundColor: BACKGROUNDS[i],
+          borderWidth: 1,
+          data: values.split(',').map(function(val) { return parseInt(val); })
+        }
       }
     }
 
